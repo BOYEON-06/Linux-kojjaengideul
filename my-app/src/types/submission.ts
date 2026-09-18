@@ -4,4 +4,7 @@ export type Submission = {
     memberName: string;
     content: string;
     submittedAt: string;
+    score?: number | null;
+    feedback?: string | null;
+    gradedAt?: string | null;
 };

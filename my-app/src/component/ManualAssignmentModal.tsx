@@ -2,7 +2,11 @@ import React, { useState } from "react";
 
 type ManualAssignmentModalProps = {
     onClose: () => void;
-    onCreate: (title: string, content: string) => Promise<void>;
+    onCreate: (title: string, content: string, dueDate: string) => Promise<void>;
+};
+
+const formatDateTimeForServer = (dateTimeLocal: string) => {
+    return dateTimeLocal.replace("T", " ") + ":00";
 };
 
 const ManualAssignmentModal: React.FC<ManualAssignmentModalProps> = ({
@@ -11,6 +15,7 @@ const ManualAssignmentModal: React.FC<ManualAssignmentModalProps> = ({
 }) => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const [dueDate, setDueDate] = useState("");
     const [creating, setCreating] = useState(false);
 
     const handleCreate = async () => {
@@ -24,9 +29,28 @@ const ManualAssignmentModal: React.FC<ManualAssignmentModalProps> = ({
             return;
         }
 
+        if (!dueDate) {
+            alert("마감기한을 설정하세요.");
+            return;
+        }
+
+        const selectedDueDate = new Date(dueDate);
+        const now = new Date();
+
+        if (selectedDueDate <= now) {
+            alert("마감기한은 현재 시간 이후로 설정해야 합니다.");
+            return;
+        }
+
         try {
             setCreating(true);
-            await onCreate(title, content);
+
+            await onCreate(
+                title.trim(),
+                content.trim(),
+                formatDateTimeForServer(dueDate)
+            );
+
             onClose();
         } catch (error) {
             console.error(error);
@@ -72,6 +96,15 @@ const ManualAssignmentModal: React.FC<ManualAssignmentModalProps> = ({
                             placeholder="예: JPA의 영속성 컨텍스트에 대해 서술하세요."
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
+                        />
+                    </label>
+
+                    <label>
+                        마감기한
+                        <input
+                            type="datetime-local"
+                            value={dueDate}
+                            onChange={(e) => setDueDate(e.target.value)}
                         />
                     </label>
                 </div>

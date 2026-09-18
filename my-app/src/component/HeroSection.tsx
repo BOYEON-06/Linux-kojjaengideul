@@ -1,15 +1,18 @@
 import React from "react";
 import type { Study } from "../types/study";
-import type { Assignment } from "../types/assignment";
 
 type HeroSectionProps = {
     selectedStudy: Study | null;
-    assignmentCount: number;
+    activeAssignmentCount: number;
+    submittedActiveAssignmentCount: number;
+    progressPercent: number;
 };
 
 const HeroSection: React.FC<HeroSectionProps> = ({
     selectedStudy,
-    assignmentCount,
+    activeAssignmentCount,
+    submittedActiveAssignmentCount,
+    progressPercent,
 }) => {
     return (
         <section className="hero-card">
@@ -40,7 +43,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 
                     <div className="summary-box">
                         <h3>
-                            {selectedStudy ? `${assignmentCount}개` : "0개"}
+                            {selectedStudy ? `${activeAssignmentCount}개` : "0개"}
                         </h3>
 
                         <p>진행중 과제</p>
@@ -59,21 +62,34 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="hero-right">
                 <div className="progress-card">
                     <p className="progress-title">
-                        이번 주 프로젝트 진행률
+                        제출 기준 프로젝트 진행률
                     </p>
 
                     <div className="progress-bar">
                         <div
                             className="progress-fill"
                             style={{
-                                width: selectedStudy ? "78%" : "0%",
+                                width: selectedStudy ? `${progressPercent}%` : "0%",
                             }}
                         ></div>
                     </div>
 
                     <strong>
-                        {selectedStudy ? "78%" : "0%"}
+                        {selectedStudy ? `${progressPercent}%` : "0%"}
                     </strong>
+
+                    <p
+                        style={{
+                            margin: "10px 0 0",
+                            color: "rgba(255, 255, 255, 0.75)",
+                            fontSize: "13px",
+                            lineHeight: 1.6,
+                        }}
+                    >
+                        {selectedStudy
+                            ? `제출 완료 ${submittedActiveAssignmentCount}개 / 마감 전 과제 ${activeAssignmentCount}개`
+                            : "스터디를 선택하면 진행률이 표시됩니다."}
+                    </p>
                 </div>
             </div>
         </section>
