@@ -1,15 +1,16 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
 import { authContinue } from "../api/authAPI";
 import "./Login.css";
 
-function Login() {
+type LoginProps = {
+    onLoginSuccess: () => void;
+};
+
+function Login({ onLoginSuccess }: LoginProps) {
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-
-    const navigate = useNavigate();
 
     const handleAuth = async () => {
         if (!name.trim()) {
@@ -26,17 +27,23 @@ function Login() {
             setLoading(true);
 
             const data = await authContinue({
-                name,
-                password,
+                name: name.trim(),
+                password: password.trim(),
             });
 
             localStorage.setItem("user", JSON.stringify(data.user));
 
+            console.log("로그인 응답:", data);
+            console.log("현재 브라우저에서 접근 가능한 쿠키:", document.cookie);
+
             alert(data.message || "로그인 성공");
-            navigate("/home");
+
+            onLoginSuccess();
         } catch (error) {
             console.error(error);
-            alert("로그인 또는 회원가입에 실패했습니다.");
+            alert(
+                "로그인 또는 회원가입에 실패했습니다. 프록시 설정, 세션 쿠키, 백엔드 응답을 확인해주세요."
+            );
         } finally {
             setLoading(false);
         }

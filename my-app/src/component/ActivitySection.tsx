@@ -1,6 +1,20 @@
 import React from "react";
 
-const ActivitySection: React.FC = () => {
+type ActivitySectionProps = {
+    activeAssignmentCount: number;
+    submittedActiveAssignmentCount: number;
+    expiredAssignmentCount: number;
+    totalAssignmentCount: number;
+    progressPercent: number;
+};
+
+const ActivitySection: React.FC<ActivitySectionProps> = ({
+    activeAssignmentCount,
+    submittedActiveAssignmentCount,
+    expiredAssignmentCount,
+    totalAssignmentCount,
+    progressPercent,
+}) => {
     return (
         <div className="content-card wide">
             <div className="card-title-row">
@@ -9,23 +23,27 @@ const ActivitySection: React.FC = () => {
 
             <div className="activity-grid">
                 <div className="activity-box">
-                    <strong>24</strong>
-                    <span>이번 주 생성된 AI 퀴즈</span>
+                    <strong>{activeAssignmentCount}</strong>
+                    <span>진행중 과제</span>
                 </div>
 
                 <div className="activity-box">
-                    <strong>18</strong>
-                    <span>제출된 과제 수</span>
+                    <strong>{submittedActiveAssignmentCount}</strong>
+                    <span>마감 전 제출 완료</span>
                 </div>
 
                 <div className="activity-box">
-                    <strong>9</strong>
-                    <span>실시간 채팅 참여자</span>
+                    <strong>{expiredAssignmentCount}</strong>
+                    <span>마감된 과제</span>
                 </div>
 
                 <div className="activity-box">
-                    <strong>4</strong>
-                    <span>예정된 일정</span>
+                    <strong>{progressPercent}%</strong>
+                    <span>
+                        제출 진행률
+                        <br />
+                        전체 {totalAssignmentCount}개 기준
+                    </span>
                 </div>
             </div>
         </div>
